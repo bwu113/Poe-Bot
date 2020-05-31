@@ -397,7 +397,7 @@ async def test(ctx):
     embed = discord.Embed(
         colour = discord.Colour.blue()
     )
-    file = discord.File("./Images/EchoPlus.png",filename="EchoPlus.png")
+    file = discord.File("./Images/EchoPlus.png")
     embed.set_author(name="Awakened Gem", icon_url="attachment://EchoPlus.png")
     embed.set_thumbnail(url="attachment://EchoPlus.png")
     embed.add_field(name="Gem Level:", value="1")
