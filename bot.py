@@ -391,23 +391,24 @@ async def div(ctx, *, item: str = "all"):
             break
 
 @poeBot.command()
-async def test(ctx):
-    #req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=SkillGem&language=en")
-    #data = req.json()
-    embed = discord.Embed(
-        colour = discord.Colour.blue()
-    )
-    file = discord.File("./Images/EchoPlus.png")
-    embed.set_author(name="Awakened Gem", icon_url="attachment://EchoPlus.png")
-    embed.set_thumbnail(url="attachment://EchoPlus.png")
-    embed.add_field(name="Gem Level:", value="1")
-    embed.add_field(name="Gem Quality:", value="0%")
-    embed.add_field(name="Corrupted:", value="No")
-    embed.add_field(name="Current Price:", value="X Chaos")
-    await ctx.send(file = file, embed=embed)
-    #file = discord.File("path/to/image/file.png", filename="image.png")
-    #embed.set_image(url="attachment://image.png")
-    #await ctx.send(file=file, embed=embed)
+async def gem(ctx, *, item: str = ""):
+    req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=SkillGem&language=en")
+    data = req.json()
+    for i in data["lines"]:
+        if item.lower() in i["name"].lower():
+            await ctx.send(i["name"] + ': ' + str(price) + '<:emoji_name:715777677352632434>')
+
+    #embed = discord.Embed(
+    #    colour = discord.Colour.blue()
+    #)
+    #file = discord.File("./Images/EchoPlus.png")
+    #embed.set_author(name="Awakened Gem", icon_url="attachment://EchoPlus.png")
+    #embed.set_thumbnail(url="attachment://EchoPlus.png")
+    #embed.add_field(name="Gem Level:", value="1")
+    #embed.add_field(name="Gem Quality:", value="0%")
+    #embed.add_field(name="Corrupted:", value="No")
+    #embed.add_field(name="Current Price:", value="X Chaos")
+    #await ctx.send(file = file, embed=embed)
 
 @poeBot.command()
 async def clear(ctx, amount: int):
