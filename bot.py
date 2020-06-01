@@ -402,17 +402,26 @@ async def gem(ctx, *, item: str = ""):
                     colour = discord.Colour.blue()
                 )
                 file = discord.File("./Images/EchoPlus.png")
-                embed.set_author(name="Awakened Gem", icon_url="attachment://EchoPlus.png")
+                embed.set_author(name=i["name"], icon_url="attachment://EchoPlus.png")
                 embed.set_thumbnail(url="attachment://EchoPlus.png")
                 embed.add_field(name="Gem Level:", value= i["gemLevel"])
                 embed.add_field(name="Gem Quality:", value=i["gemQuality"])
                 embed.add_field(name="Corrupted:", value=i["corrupted"])
-                embed.add_field(name="Current Price:", value=price)
+                embed.add_field(name="Current Price:", value=price + 'K <:emoji_name:715777677352632434>')
                 await ctx.send(file = file, embed=embed)
-                #tempHold.append(i["name"] + ': ' + str(price) + 'K <:emoji_name:715777677352632434>')
-            #else:
-            #    price = round(i["chaosValue"], 1)
-            #    tempHold.append(i["name"] + ': ' + str(price) + '<:emoji_name:715777677352632434>')
+            else:
+                price = round(i["chaosValue"], 1)
+                embed = discord.Embed(
+                    colour = discord.Colour.blue()
+                )
+                file = discord.File("./Images/EchoPlus.png")
+                embed.set_author(name=i["name"], icon_url="attachment://EchoPlus.png")
+                embed.set_thumbnail(url="attachment://EchoPlus.png")
+                embed.add_field(name="Gem Level:", value= i["gemLevel"])
+                embed.add_field(name="Gem Quality:", value=i["gemQuality"])
+                embed.add_field(name="Corrupted:", value=i["corrupted"])
+                embed.add_field(name="Current Price:", value=price + '<:emoji_name:715777677352632434>')
+                await ctx.send(file = file, embed=embed)
 
 
     #embed = discord.Embed(
