@@ -405,9 +405,8 @@ async def gem(ctx, *, item: str = ""):
                 embed = discord.Embed(
                     colour = discord.Colour.blue()
                 )
-                #file = discord.File("./Images/" + i["name"] + ".png")
-                embed.set_author(name=i["name"], icon_url="attachment://" + i["name"] + ".png")
-                embed.set_thumbnail(url="attachment://" + i["name"] + ".png")
+                embed.set_author(name=i["name"], icon_url=i["icon"])
+                embed.set_thumbnail(url=i["icon"])
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
                 embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
@@ -419,9 +418,8 @@ async def gem(ctx, *, item: str = ""):
                 embed = discord.Embed(
                     colour = discord.Colour.blue()
                 )
-                #file = discord.File("./Images/" + i["name"] + ".png")
-                embed.set_author(name=i["name"], icon_url="attachment://" + i["name"] + ".png")
-                embed.set_thumbnail(url="attachment://" + i["name"] + ".png")
+                embed.set_author(name=i["name"], icon_url=i["icon"])
+                embed.set_thumbnail(url=i["icon"])
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
                 embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
@@ -432,9 +430,7 @@ async def gem(ctx, *, item: str = ""):
         return
     maxPage = len(gemList)
     gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-    file = discord.File("./Images/" + gemNames[curPage-1] + ".png", filename = gemNames[curPage-1])
     message = await ctx.send(file = file, embed = gemList[curPage-1])
-    file.close()
     if maxPage == 1:
         await message.add_reaction("❌")
     else:
@@ -452,26 +448,22 @@ async def gem(ctx, *, item: str = ""):
             if str(reaction.emoji) == "➡️" and curPage != maxPage:
                 curPage += 1
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-                file = discord.File("./Images/" + gemNames[curPage-1] + ".png", filename = gemNames[curPage-1])
-                await message.edit(file = file, embed = gemList[curPage-1])
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "➡️" and curPage == maxPage:
                 curPage = 1
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-                file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
-                await message.edit(file = file, embed = gemList[curPage-1])
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "⬅️" and curPage > 1:
                 curPage -= 1
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-                file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
-                await message.edit(file = file, embed = gemList[curPage-1])
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "⬅️" and curPage == 1:
                 curPage = maxPage
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-                file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
-                await message.edit(file = file, embed = gemList[curPage-1])
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "❌":
                 await message.delete()
