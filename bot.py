@@ -432,7 +432,7 @@ async def gem(ctx, *, item: str = ""):
         return
     maxPage = len(gemList)
     gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-    file = discord.File("./Images/" + gemNames[curPage] + ".png")
+    file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
     message = await ctx.send(file = file, embed = gemList[curPage-1])
     if maxPage == 1:
         await message.add_reaction("❌")
