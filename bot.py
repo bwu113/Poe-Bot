@@ -411,7 +411,8 @@ async def gem(ctx, *, item: str = ""):
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
                 embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 if int(i["exaltedValue"]) > 0:
-                    embed.add_field(name="Current Price:", value=str(round(i["exaltedValue"]/1000, 1)) + 'K <:emoji_name:715777677352632434>')
+                    embed.add_field(name="Current Price:", value=str(round(i["exaltedValue"]/1000, 1)) + '<:emoji_name:715777693223878676>')
+                    embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
                 else:
                     embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
                 gemNames.append(i["name"])
