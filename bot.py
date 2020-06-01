@@ -452,7 +452,7 @@ async def gem(ctx, *, item: str = ""):
                 curPage += 1
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
                 file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
-                await message.edit(file = file, embed = gemList[curPage-1])
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "➡️" and curPage == maxPage:
                 curPage = 1
