@@ -396,7 +396,7 @@ async def gem(ctx, *, item: str = ""):
     data = req.json()
     maxPage = 0
     curPage = 1
-    gemList = {}
+    gemList = []
     for i in data["lines"]:
         if item.lower() in i["name"].lower():
             if int(i["chaosValue"]/1000) != 0:
