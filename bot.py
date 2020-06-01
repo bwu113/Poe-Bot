@@ -394,7 +394,7 @@ async def div(ctx, *, item: str = "all"):
 async def gem(ctx, *, item: str = ""):
     req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=SkillGem&language=en")
     data = req.json()
-    test = []
+    gemList = []
     for i in data["lines"]:
         if item.lower() in i["name"].lower():
             if int(i["chaosValue"]/1000) != 0:
@@ -409,9 +409,7 @@ async def gem(ctx, *, item: str = ""):
                 embed.add_field(name="Gem Quality:", value=i["gemQuality"])
                 embed.add_field(name="Corrupted:", value=i["corrupted"])
                 embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
-                test.append(embed)
-                print(len(test))
-                await ctx.send(file = file, embed=embed)
+                gemList.append(embed)
             else:
                 price = round(i["chaosValue"], 1)
                 embed = discord.Embed(
@@ -424,7 +422,8 @@ async def gem(ctx, *, item: str = ""):
                 embed.add_field(name="Gem Quality:", value=i["gemQuality"])
                 embed.add_field(name="Corrupted:", value=i["corrupted"])
                 embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
-                await ctx.send(file = file, embed=embed)
+                gemList.append(embed)
+    await ctx.send(file = file, embed=gemList[1])
 
 
     #embed = discord.Embed(
