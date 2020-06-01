@@ -404,12 +404,12 @@ async def gem(ctx, *, item: str = ""):
                 embed = discord.Embed(
                     colour = discord.Colour.blue()
                 )
-                file = discord.File("./Images/EchoPlus.png")
-                embed.set_author(name=i["name"], icon_url="attachment://EchoPlus.png")
-                embed.set_thumbnail(url="attachment://EchoPlus.png")
+                file = discord.File("./Images/" + i["name"] + ".png")
+                embed.set_author(name=i["name"], icon_url="attachment://" + i["name"] + ".png")
+                embed.set_thumbnail(url="attachment://" + i["name"] + ".png")
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
-                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = False)
+                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
                 gemList.append(embed)
             else:
@@ -417,19 +417,19 @@ async def gem(ctx, *, item: str = ""):
                 embed = discord.Embed(
                     colour = discord.Colour.blue()
                 )
-                file = discord.File("./Images/EchoPlus.png")
-                embed.set_author(name=i["name"], icon_url="attachment://EchoPlus.png")
-                embed.set_thumbnail(url="attachment://EchoPlus.png")
+                file = discord.File("./Images/" + i["name"] + ".png")
+                embed.set_author(name=i["name"], icon_url="attachment://" + i["name"] + ".png")
+                embed.set_thumbnail(url="attachment://" + i["name"] + ".png")
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
-                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = False)
+                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
                 gemList.append(embed)
     if len(gemList) == 0:
         return
     maxPage = len(gemList)
     gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-    message = await ctx.send(embed = gemList[curPage-1])
+    message = await ctx.send(file = file, embed = gemList[curPage-1])
     if maxPage == 1:
         await message.add_reaction("❌")
     else:
