@@ -396,6 +396,7 @@ async def gem(ctx, *, item: str = ""):
     data = req.json()
     for i in data["lines"]:
         if item.lower() in i["name"].lower():
+            price = round(i["chaosValue"], 1)
             await ctx.send(i["name"] + ': ' + str(price) + '<:emoji_name:715777677352632434>')
 
     #embed = discord.Embed(
