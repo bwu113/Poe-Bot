@@ -391,13 +391,29 @@ async def div(ctx, *, item: str = "all"):
             break
 
 @poeBot.command()
-async def gem(ctx, *, item: str = "", level: int = 1, quality: int = 0, corrupted: bool = False):
+async def gem(ctx, *, item: str = ""):
     req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=SkillGem&language=en")
     data = req.json()
     for i in data["lines"]:
-        if item.lower() in i["name"].lower() and i["gemLevel"] == level and i["gemQuality"] == quality and i["corrupted"] == corrupted:
-            price = round(i["chaosValue"], 1)
-            await ctx.send(i["name"] + ': ' + str(price) + '<:emoji_name:715777677352632434>')
+        if item.lower() in i["name"].lower():
+            if int(i["chaosValue"]/1000) != 0:
+                price = round(i["chaosValue"]/1000, 1)
+                embed = discord.Embed(
+                    colour = discord.Colour.blue()
+                )
+                file = discord.File("./Images/EchoPlus.png")
+                embed.set_author(name="Awakened Gem", icon_url="attachment://EchoPlus.png")
+                embed.set_thumbnail(url="attachment://EchoPlus.png")
+                embed.add_field(name="Gem Level:", value= i["gemLevel"])
+                embed.add_field(name="Gem Quality:", value=i["gemQuality"])
+                embed.add_field(name="Corrupted:", value=i["corrupted"])
+                embed.add_field(name="Current Price:", value=price)
+                await ctx.send(file = file, embed=embed)
+                #tempHold.append(i["name"] + ': ' + str(price) + 'K <:emoji_name:715777677352632434>')
+            #else:
+            #    price = round(i["chaosValue"], 1)
+            #    tempHold.append(i["name"] + ': ' + str(price) + '<:emoji_name:715777677352632434>')
+
 
     #embed = discord.Embed(
     #    colour = discord.Colour.blue()
