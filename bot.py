@@ -323,6 +323,8 @@ async def div(ctx, *, item: str = "all"):
     list = ""
     tempHold = []
     content = []
+    if item.lower() in "the" or len(item) < 3:   #FIX THIS LOGIC
+        return
     for i in data["lines"]:
         if item.lower() == "all":
             if i["chaosValue"] > 10:
@@ -397,9 +399,16 @@ async def gem(ctx, *, item: str = ""):
     maxPage = 0
     curPage = 1
     gemList = []
-    gemNames = []
+    corrupt = ""
+    pic = ""
+    if len(item) < 3 or item.lower() in "support":
+        return
     for i in data["lines"]:
         if item.lower() in i["name"].lower():
+            if i["corrupted"] == True:
+                corrupt = "Yes"
+            else:
+                corrupt = "No"
             if int(i["chaosValue"]/1000) != 0:
                 price = round(i["chaosValue"]/1000, 1)
                 embed = discord.Embed(
@@ -409,13 +418,12 @@ async def gem(ctx, *, item: str = ""):
                 embed.set_thumbnail(url=i["icon"])
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
-                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
+                embed.add_field(name="Corrupted:", value=corrupt, inline = True)
                 if int(i["exaltedValue"]) > 0:
-                    embed.add_field(name="Current Price:", value=str(round(i["exaltedValue"]/1000, 1)) + '<:emoji_name:715777693223878676>')
-                    embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
+                    embed.add_field(name="Exalted Price:", value=str(round(i["exaltedValue"], 1)) + '<:emoji_name:715777693223878676>')
+                    embed.add_field(name="Chaos Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
                 else:
                     embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
-                gemNames.append(i["name"])
                 gemList.append(embed)
             else:
                 price = round(i["chaosValue"], 1)
@@ -426,9 +434,12 @@ async def gem(ctx, *, item: str = ""):
                 embed.set_thumbnail(url=i["icon"])
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
-                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
-                embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
-                gemNames.append(i["name"])
+                embed.add_field(name="Corrupted:", value=corrupt, inline = True)
+                if int(i["exaltedValue"]) > 0:
+                    embed.add_field(name="Exalted Price:", value=str(round(i["exaltedValue"], 1)) + '<:emoji_name:715777693223878676>')
+                    embed.add_field(name="Chaos Price:", value=str(price) + '<:emoji_name:715777677352632434>')
+                else:
+                    embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
                 gemList.append(embed)
     if len(gemList) == 0:
         return
@@ -468,6 +479,97 @@ async def gem(ctx, *, item: str = ""):
                 curPage = maxPage
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
                 await message.edit(embed = gemList[curPage-1])
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "❌":
+                await message.delete()
+                break
+            else:
+                await message.remove_reaction(reaction, user)
+        except asyncio.TimeoutError:
+            await message.delete()
+            break
+
+@poeBot.command()
+async def base(ctx, mods: str, *, item: str = ""):
+    req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=BaseType&language=en")
+    data = req.json()
+    maxPage = 0
+    curPage = 1
+    itemList = []
+    if len(item) < 3:
+        return
+    for i in data["lines"]:
+        if item.lower() in i["name"].lower() and mods.lower() == str(i["variant"]).lower() and i["levelRequired"] >= 83:
+            if int(i["chaosValue"]/1000) != 0:
+                price = round(i["chaosValue"]/1000, 1)
+                embed = discord.Embed(
+                    colour = discord.Colour.blue()
+                )
+                embed.set_author(name=i["name"], icon_url=i["icon"])
+                embed.set_thumbnail(url=i["icon"])
+                embed.add_field(name="iLvl:", value= i["levelRequired"], inline = True)
+                embed.add_field(name="Influence:", value= i["variant"], inline = True)
+                embed.add_field(name="Type:", value = i["itemType"], inline = True)
+                if int(i["exaltedValue"]) > 0:
+                    embed.add_field(name="Exalted Price:", value=str(round(i["exaltedValue"], 1)) + '<:emoji_name:715777693223878676>', inline = True)
+                    embed.add_field(name="Chaos Price:", value=str(price) + 'K <:emoji_name:715777677352632434>', inline = True)
+                else:
+                    embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>', inline = True)
+                itemList.append(embed)
+            else:
+                price = round(i["chaosValue"], 1)
+                embed = discord.Embed(
+                    colour = discord.Colour.blue()
+                )
+                embed.set_author(name=i["name"], icon_url=i["icon"])
+                embed.set_thumbnail(url=i["icon"])
+                embed.add_field(name="iLvl:", value= i["levelRequired"], inline = True)
+                embed.add_field(name="Influence:", value= i["variant"], inline = True)
+                embed.add_field(name="Type:", value = i["itemType"], inline = True)
+                if int(i["exaltedValue"]) > 0:
+                    embed.add_field(name="Exalted Price:", value=str(round(i["exaltedValue"], 1)) + '<:emoji_name:715777693223878676>', inline = True)
+                    embed.add_field(name="Chaos Price:", value=str(price) + '<:emoji_name:715777677352632434>', inline = True)
+                else:
+                    embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>', inline = True)
+                itemList.append(embed)
+    if len(itemList) == 0:
+        return
+    maxPage = len(itemList)
+    itemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+    message = await ctx.send(embed = itemList[curPage-1])
+    if maxPage == 1:
+        await message.add_reaction("❌")
+    else:
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
+        await message.add_reaction("❌")
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["⬅️","➡️","❌"]
+
+    while True:
+        try:
+            reaction, user = await poeBot.wait_for("reaction_add", timeout = 15, check = check)
+
+            if str(reaction.emoji) == "➡️" and curPage != maxPage:
+                curPage += 1
+                itemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = itemList[curPage-1])
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "➡️" and curPage == maxPage:
+                curPage = 1
+                itemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = itemList[curPage-1])
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "⬅️" and curPage > 1:
+                curPage -= 1
+                itemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = itemList[curPage-1])
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "⬅️" and curPage == 1:
+                curPage = maxPage
+                itemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = itemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "❌":
                 await message.delete()
