@@ -397,6 +397,7 @@ async def gem(ctx, *, item: str = ""):
     maxPage = 0
     curPage = 1
     gemList = []
+    gemNames = []
     for i in data["lines"]:
         if item.lower() in i["name"].lower():
             if int(i["chaosValue"]/1000) != 0:
@@ -404,31 +405,34 @@ async def gem(ctx, *, item: str = ""):
                 embed = discord.Embed(
                     colour = discord.Colour.blue()
                 )
-                file = discord.File("./Images/" + i["name"] + ".png")
+                #file = discord.File("./Images/" + i["name"] + ".png")
                 embed.set_author(name=i["name"], icon_url="attachment://" + i["name"] + ".png")
                 embed.set_thumbnail(url="attachment://" + i["name"] + ".png")
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
                 embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
+                gemNames.append(i["name"])
                 gemList.append(embed)
             else:
                 price = round(i["chaosValue"], 1)
                 embed = discord.Embed(
                     colour = discord.Colour.blue()
                 )
-                file = discord.File("./Images/" + i["name"] + ".png")
+                #file = discord.File("./Images/" + i["name"] + ".png")
                 embed.set_author(name=i["name"], icon_url="attachment://" + i["name"] + ".png")
                 embed.set_thumbnail(url="attachment://" + i["name"] + ".png")
                 embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
                 embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
                 embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
+                gemNames.append(i["name"])
                 gemList.append(embed)
     if len(gemList) == 0:
         return
     maxPage = len(gemList)
     gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+    file = discord.File("./Images/" + gemNames[curPage] + ".png")
     message = await ctx.send(file = file, embed = gemList[curPage-1])
     if maxPage == 1:
         await message.add_reaction("❌")
