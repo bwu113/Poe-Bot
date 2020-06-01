@@ -394,6 +394,8 @@ async def div(ctx, *, item: str = "all"):
 async def gem(ctx, *, item: str = ""):
     req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=SkillGem&language=en")
     data = req.json()
+    maxPage = 0
+    curPage = 1
     gemList = []
     for i in data["lines"]:
         if item.lower() in i["name"].lower():
@@ -423,20 +425,49 @@ async def gem(ctx, *, item: str = ""):
                 embed.add_field(name="Corrupted:", value=i["corrupted"])
                 embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
                 gemList.append(embed)
-    await ctx.send(file = file, embed=gemList[1])
+    #await ctx.send(file = file, embed=gemList[1])
+    if len(gemList) == 0:
+        return
+    maxPage = int(len(gemList)/4)
+    message = await ctx.send(f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+    if maxPage == 1:
+        await message.add_reaction("❌")
+    else:
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
+        await message.add_reaction("❌")
 
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["⬅️","➡️","❌"]
 
-    #embed = discord.Embed(
-    #    colour = discord.Colour.blue()
-    #)
-    #file = discord.File("./Images/EchoPlus.png")
-    #embed.set_author(name="Awakened Gem", icon_url="attachment://EchoPlus.png")
-    #embed.set_thumbnail(url="attachment://EchoPlus.png")
-    #embed.add_field(name="Gem Level:", value="1")
-    #embed.add_field(name="Gem Quality:", value="0%")
-    #embed.add_field(name="Corrupted:", value="No")
-    #embed.add_field(name="Current Price:", value="X Chaos")
-    #await ctx.send(file = file, embed=embed)
+    while True:
+        try:
+            reaction, user = await poeBot.wait_for("reaction_add", timeout = 15, check = check)
+
+            if str(reaction.emoji) == "➡️" and curPage != maxPage:
+                curPage += 1
+                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "➡️" and curPage == maxPage:
+                curPage = 1
+                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{cembed = gemList[curPage-1]}')
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "⬅️" and curPage > 1:
+                curPage -= 1
+                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "⬅️" and curPage == 1:
+                curPage = maxPage
+                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+                await message.remove_reaction(reaction, user)
+            elif str(reaction.emoji) == "❌":
+                await message.delete()
+                break
+            else:
+                await message.remove_reaction(reaction, user)
+        except asyncio.TimeoutError:
+            await message.delete()
+            break
 
 @poeBot.command()
 async def clear(ctx, amount: int):
