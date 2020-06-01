@@ -432,7 +432,7 @@ async def gem(ctx, *, item: str = ""):
         return
     maxPage = len(gemList)
     gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-    file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
+    file = discord.File("./Images/" + gemNames[curPage-1] + ".png", filename = gemNames[curPage-1])
     message = await ctx.send(file = file, embed = gemList[curPage-1])
     file.close()
     if maxPage == 1:
@@ -452,7 +452,7 @@ async def gem(ctx, *, item: str = ""):
             if str(reaction.emoji) == "➡️" and curPage != maxPage:
                 curPage += 1
                 gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
-                file = discord.File("./Images/" + gemNames[curPage-1] + ".png")
+                file = discord.File("./Images/" + gemNames[curPage-1] + ".png", filename = gemNames[curPage-1])
                 await message.edit(file = file, embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "➡️" and curPage == maxPage:
