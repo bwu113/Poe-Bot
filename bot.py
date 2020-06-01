@@ -391,11 +391,11 @@ async def div(ctx, *, item: str = "all"):
             break
 
 @poeBot.command()
-async def gem(ctx, *, item: str = ""):
+async def gem(ctx, *, item: str = "", level: int = 1, quality: int = 0, corrupted: bool = False):
     req = requests.get("https://poe.ninja/api/data/itemoverview?league=Delirium&type=SkillGem&language=en")
     data = req.json()
     for i in data["lines"]:
-        if item.lower() in i["name"].lower():
+        if item.lower() in i["name"].lower() and i["gemLevel"] == level and i["gemQuality"] == quality and i["corrupted"] == corrupted:
             price = round(i["chaosValue"], 1)
             await ctx.send(i["name"] + ': ' + str(price) + '<:emoji_name:715777677352632434>')
 
