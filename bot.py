@@ -407,9 +407,9 @@ async def gem(ctx, *, item: str = ""):
                 file = discord.File("./Images/EchoPlus.png")
                 embed.set_author(name=i["name"], icon_url="attachment://EchoPlus.png")
                 embed.set_thumbnail(url="attachment://EchoPlus.png")
-                embed.add_field(name="Gem Level:", value= i["gemLevel"])
-                embed.add_field(name="Gem Quality:", value=i["gemQuality"])
-                embed.add_field(name="Corrupted:", value=i["corrupted"])
+                embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
+                embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
+                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 embed.add_field(name="Current Price:", value=str(price) + 'K <:emoji_name:715777677352632434>')
                 gemList.append(embed)
             else:
@@ -420,16 +420,16 @@ async def gem(ctx, *, item: str = ""):
                 file = discord.File("./Images/EchoPlus.png")
                 embed.set_author(name=i["name"], icon_url="attachment://EchoPlus.png")
                 embed.set_thumbnail(url="attachment://EchoPlus.png")
-                embed.add_field(name="Gem Level:", value= i["gemLevel"])
-                embed.add_field(name="Gem Quality:", value=i["gemQuality"])
-                embed.add_field(name="Corrupted:", value=i["corrupted"])
+                embed.add_field(name="Gem Lvl:", value= i["gemLevel"], inline = True)
+                embed.add_field(name="Gem %:", value=i["gemQuality"], inline = True)
+                embed.add_field(name="Corrupted:", value=i["corrupted"], inline = True)
                 embed.add_field(name="Current Price:", value=str(price) + '<:emoji_name:715777677352632434>')
                 gemList.append(embed)
-    #await ctx.send(file = file, embed=gemList[1])
     if len(gemList) == 0:
         return
-    maxPage = int(len(gemList)/4)
-    message = await ctx.send(f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+    maxPage = len(gemList)
+    gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+    message = await ctx.send(embed = gemList[curPage-1])
     if maxPage == 1:
         await message.add_reaction("❌")
     else:
@@ -446,19 +446,23 @@ async def gem(ctx, *, item: str = ""):
 
             if str(reaction.emoji) == "➡️" and curPage != maxPage:
                 curPage += 1
-                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+                gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "➡️" and curPage == maxPage:
                 curPage = 1
-                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{cembed = gemList[curPage-1]}')
+                gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "⬅️" and curPage > 1:
                 curPage -= 1
-                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+                gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "⬅️" and curPage == 1:
                 curPage = maxPage
-                await message.edit(content=f'[Page {curPage}/{maxPage}]\n{embed = gemList[curPage-1]}')
+                gemList[curPage-1].set_footer(text = f'[Page {curPage}/{maxPage}]')
+                await message.edit(embed = gemList[curPage-1])
                 await message.remove_reaction(reaction, user)
             elif str(reaction.emoji) == "❌":
                 await message.delete()
